@@ -1,0 +1,39 @@
+simple-cosmeticos/
+│
+├── index.html                    (Página principal - MODIFICADO)
+├── sobre-nosotros.html           (Nueva página)
+│
+├── css/
+│   └── style.css                 (Todo el CSS - MODIFICADO)
+│
+├── js/
+│   └── script.js                 (Todo el JS - MODIFICADO)
+│
+└── assets/
+    ├── productos/                (Aquí subes tus 24 imágenes JPG)
+    │   ├── shampoo-solido.jpg
+    │   ├── crema-corporal-manos.jpg
+    │   ├── crema-corporal.jpg
+    │   ├── sales-terapeuticas.jpg
+    │   ├── acondicionador.jpg
+    │   ├── tonico-facial.jpg
+    │   ├── after-shave.jpg
+    │   ├── protector-termico.jpg
+    │   ├── repelente.jpg
+    │   ├── gel-limpieza.jpg
+    │   ├── crema-limpieza-facial.jpg
+    │   ├── acondicionador-peinar.jpg
+    │   ├── perfumes.jpg
+    │   ├── lip-gloss.jpg
+    │   ├── serum-facial.jpg
+    │   ├── sombra.jpg
+    │   ├── balsamo-labial.jpg
+    │   ├── labial.jpg
+    │   ├── jabones-saponificados.jpg
+    │   ├── agua-micelar.jpg
+    │   ├── gel-contorno-ojos.jpg
+    │   ├── oleo-gel-dolores.jpg
+    │   ├── crema-panalera.jpg
+    │   └── crema-facial.jpg
+    │
+    └── hero-bg.jpg               (Imagen de fondo hero - opcional)
