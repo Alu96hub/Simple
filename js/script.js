@@ -9,10 +9,10 @@ const CONFIG = {
     storageKey: "simple-products",
     github: {
         // ⚠️ Reemplazá con tus datos reales después
-        repo: "tu-usuario/simple-cosmeticos",
+        repo: "Alu96hub/Simple",
         branch: "main",
         productsPath: "data/products.json",
-        token: "" // Se configura después
+        token: "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" // Se configura después
     },
     cacheDuration: 5 * 60 * 1000 // 5 minutos
 };
