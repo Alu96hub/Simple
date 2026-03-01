@@ -1,21 +1,22 @@
 /* ========================================
    SIMPLE - COSMÉTICOS NATURALES
-   Hoja de Estilos Principal - Versión Corregida
+   Hoja de Estilos Principal - Versión Final Corregida
    ======================================== */
 
 /* === VARIABLES CSS === */
 :root {
     /* Paleta Rosa & Blanco */
-    --rosa-principal: #FF69B4;        /* Hot Pink - color principal */
-    --rosa-claro: #FFB6C1;            /* Light Pink - secundario */
-    --rosa-suave: #FFF0F5;            /* Lavender Blush - fondos */
-    --rosa-borde: #FFC0CB;            /* Pink - bordes */
+    --rosa-principal: #FF69B4;
+    --rosa-claro: #FFB6C1;
+    --rosa-suave: #FFF0F5;
+    --rosa-borde: #FFC0CB;
     --blanco: #FFFFFF;
     --blanco-humo: #F8F8F8;
     --texto-oscuro: #4A4A4A;
     --texto-claro: #7A7A7A;
     --sombra: 0 4px 12px rgba(255, 105, 180, 0.15);
     --sombra-hover: 0 8px 25px rgba(255, 105, 180, 0.25);
+    --sombra-cart: 0 -10px 25px rgba(0, 0, 0, 0.15);
     --transicion: all 0.3s ease;
     --radio-borde: 15px;
 }
@@ -231,18 +232,200 @@ img {
     color: var(--rosa-principal);
 }
 
-/* === CARRITO DROPDOWN - VERSIÓN PROFESIONAL === */
+/* ========================================
+   🛒 CARRITO DROPDOWN - VERSIÓN FINAL CORREGIDA
+   ======================================== */
 
-/* Contenedor principal del carrito */
+/* === CARRITO MÓVIL (default) === */
 .cart-dropdown {
+    /* Posicionamiento móvil: bottom sheet fijo */
     position: fixed;
-    bottom: -100%;
+    bottom: 0; 
     left: 0;
     width: 100%;
-    /* Fondo sólido con fallback */
+    z-index: 1001;
+    
+    /* Apariencia */
     background: var(--blanco);
-…    border: 1px solid var(--rosa-borde);
+    border-top: 3px solid var(--rosa-principal);
+    border-radius: 20px 20px 0 0;
+    box-shadow: var(--sombra-cart);
+    padding: 20px;
+    
+    /* Layout interno */
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh; /* Garantiza que siempre se vea en pantalla */
+    
+    /* Estado Oculto mediante Transform (Evita parpadeos y transparencias) */
+    transform: translateY(100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease, 
+                visibility 0.3s;
 }
+
+/* === CARRITO ACTIVO === */
+.cart-dropdown.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+/* === CONTENEDOR DE ITEMS CON SCROLL === */
+.cart-items {
+    overflow-y: auto;
+    flex-grow: 1;
+    flex-shrink: 1; /* Permite que la lista se encoja para dejar espacio al footer */
+    min-height: 100px;
+    margin: 10px 0 15px;
+    padding: 5px;
+    border: 1px dashed var(--rosa-borde);
+    border-radius: 10px;
+    background: var(--rosa-suave);
+}
+
+/* === ITEM INDIVIDUAL DEL CARRITO === */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 8px 5px;
+    background: var(--blanco);
+    border-radius: 10px;
+    border-left: 3px solid var(--rosa-principal);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: var(--transicion);
+}
+
+.cart-item:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.1);
+}
+
+.cart-item-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 3px;
+    font-weight: 600;
+    color: var(--texto-oscuro);
+}
+
+.cart-item-info p {
+    font-size: 0.85rem;
+    color: var(--texto-claro);
+}
+
+.remove-item {
+    color: #ff6b6b;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: var(--transicion);
+    background: var(--rosa-suave);
+    flex-shrink: 0;
+}
+
+.remove-item:hover {
+    background: #ff6b6b;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* === HEADER DEL CARRITO === */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rosa-borde);
+    position: relative;
+    flex-shrink: 0; /* Evita que el header se achique */
+}
+
+.cart-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--rosa-principal);
+    border-radius: 2px;
+}
+
+.cart-header h3 {
+    color: var(--rosa-principal);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.close-cart-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--texto-claro);
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: var(--transicion);
+    line-height: 1;
+}
+
+.close-cart-btn:hover {
+    color: var(--rosa-principal);
+    background: var(--rosa-suave);
+}
+
+/* === FOOTER DEL CARRITO === */
+.cart-footer {
+    border-top: 2px solid var(--rosa-borde);
+    padding-top: 15px;
+    margin-top: auto;
+    background: var(--blanco);
+    border-radius: 10px;
+    flex-shrink: 0; /* Asegura que el footer y botón SIEMPRE sean visibles */
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--texto-oscuro);
+    padding: 12px;
+    background: var(--rosa-suave);
+    border-radius: 8px;
+    border: 1px solid var(--rosa-borde);
+}
+
+.empty-cart-msg {
+    text-align: center;
+    color: var(--texto-claro);
+    padding: 20px;
+    font-style: italic;
+}
+
+/* === Scrollbar dentro del carrito === */
+.cart-items::-webkit-scrollbar {
+    width: 6px;
+}
+.cart-items::-webkit-scrollbar-track {
+    background: transparent;
+}
+.cart-items::-webkit-scrollbar-thumb {
+    background: var(--rosa-claro);
+    border-radius: 3px;
+}
+.cart-items::-webkit-scrollbar-thumb:hover {
+    background: var(--rosa-principal);
+}
+
 /* === HERO SECTION === */
 .hero {
     height: 80vh;
@@ -387,8 +570,8 @@ img {
 
 .filter-btn:hover,
 .filter-btn.active {
-    background-color: var(--rosa-principal);  /* ✅ FIX: Fondo rosa */
-    color: var(--blanco);                       /* ✅ FIX: Texto blanco */
+    background-color: var(--rosa-principal);
+    color: var(--blanco);
 }
 
 /* === GRID DE PRODUCTOS === */
@@ -469,6 +652,14 @@ img {
     font-weight: 700;
     font-size: 1.2rem;
     margin-bottom: 15px;
+}
+
+.empty-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-claro);
+    font-size: 1.1rem;
 }
 
 /* === SECCIÓN NOSOTROS === */
@@ -926,7 +1117,9 @@ footer {
     font-size: 0.95rem;
 }
 
-/* === MEDIA QUERIES - RESPONSIVE === */
+/* ========================================
+   📱 MEDIA QUERIES - RESPONSIVE
+   ======================================== */
 
 /* Tablet y arriba */
 @media (min-width: 400px) {
@@ -935,8 +1128,9 @@ footer {
     }
 }
 
+/* Desktop */
 @media (min-width: 768px) {
-    /* Menú hamburguesa oculto en desktop */
+    /* Menú hamburguesa oculto */
     .menu-btn {
         display: none;
     }
@@ -974,14 +1168,46 @@ footer {
         grid-template-columns: repeat(3, 1fr);
     }
     
-    /* === VERSIÓN DESKTOP (min-width: 768px) === */
-@media (min-width: 768px) {
+    /* === CARRITO DESKTOP: Menú flotante === */
     .cart-dropdown {
-        position: absolute;
-        top: 70px;
+        position: fixed; /* Mantenemos fixed para que baje con el usuario al scrollear */
+        top: 80px; /* Justo debajo del header */
         right: 20px;
         bottom: auto;
-…    }
+        left: auto;
+        width: 380px;
+        max-height: calc(100vh - 100px); /* Ocupa el espacio disponible sin salirse */
+        border-radius: 16px;
+        border: 2px solid var(--rosa-borde);
+        box-shadow: var(--sombra-hover);
+        
+        /* Estado oculto desktop - animación sutil de arriba hacia abajo */
+        transform: translateY(-20px);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+    }
+    
+    .cart-dropdown.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+        transition-delay: 0s;
+    }
+}
+
+@media (min-width: 1024px) {
+    .products-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+    
+    .hero-content p {
+        font-size: 1.3rem;
+    }
 }
 
 /* Móvil: Menú hamburguesa */
