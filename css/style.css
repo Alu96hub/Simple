@@ -661,7 +661,174 @@ img {
     color: var(--texto-claro);
     font-size: 1.1rem;
 }
+/* ========== PROMOCIONES ========== */
+.promos-section {
+    padding: 20px 0 40px;
+    background: linear-gradient(135deg, #fff9f7 0%, #fff 100%);
+}
 
+.promos-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--rosa-principal);
+    margin-bottom: 30px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+.promos-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--rosa-borde);
+    margin: 10px auto 0;
+}
+
+.promos-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 10px;
+}
+
+.promo-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(226, 154, 154, 0.15);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(226, 154, 154, 0.2);
+    position: relative;
+}
+
+.promo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(226, 154, 154, 0.25);
+}
+
+.promo-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--rosa-principal);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(226, 154, 154, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.promo-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--rosa-borde);
+}
+
+.promo-info {
+    padding: 20px;
+}
+
+.promo-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--rosa-principal);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.promo-desc {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.promo-price-info {
+    background: #faf0f0;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+.promo-original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.promo-final-price {
+    color: var(--rosa-principal);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.promo-final-price small {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #e08f8f;
+}
+
+.promo-savings {
+    color: #4caf50;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.promo-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--rosa-principal), var(--rosa-oscuro));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.promo-btn:hover {
+    background: linear-gradient(135deg, var(--rosa-oscuro), var(--rosa-principal));
+    transform: scale(1.02);
+}
+
+.promo-btn i {
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .promos-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .promo-card {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
 /* === SECCIÓN NOSOTROS === */
 .about-section {
     background-color: var(--blanco);
