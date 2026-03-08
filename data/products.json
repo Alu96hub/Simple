@@ -1,26 +1,409 @@
-[
-  { id: 1, name: "Shampoo sólido", price: 1000, image: "shampoo-solido.jpg", categoria: "cabello" },
-    { id: 2, name: "Crema corporal y manos", price: 1000, image: "crema-corporal-manos.jpg", categoria: "cuerpo" },
-    { id: 3, name: "Crema corporal", price: 1000, image: "crema-corporal.jpg", categoria: "cuerpo" },
-    { id: 4, name: "Sales terapéuticas", price: 1000, image: "sales-terapeuticas.jpg", categoria: "cuerpo" },
-    { id: 5, name: "Acondicionador", price: 1000, image: "acondicionador.jpg", categoria: "cabello" },
-    { id: 6, name: "Tónico facial", price: 1000, image: "tonico-facial.jpg", categoria: "rostro" },
-    { id: 7, name: "After shave", price: 1000, image: "after-shave.jpg", categoria: "cuerpo" },
-    { id: 8, name: "Protector térmico capilar", price: 1000, image: "protector-termico.jpg", categoria: "cabello" },
-    { id: 9, name: "Repelente", price: 1000, image: "repelente.jpg", categoria: "otros" },
-    { id: 10, name: "Gel de limpieza", price: 1000, image: "gel-limpieza.jpg", categoria: "rostro" },
-    { id: 11, name: "Crema de limpieza facial", price: 1000, image: "crema-limpieza-facial.jpg", categoria: "rostro" },
-    { id: 12, name: "Acondicionador para peinar", price: 1000, image: "acondicionador-peinar.jpg", categoria: "cabello" },
-    { id: 13, name: "Perfumes", price: 1000, image: "perfumes.jpg", categoria: "otros" },
-    { id: 14, name: "Lip gloss", price: 1000, image: "lip-gloss.jpg", categoria: "maquillaje" },
-    { id: 15, name: "Serúm facial", price: 1000, image: "serum-facial.jpg", categoria: "rostro" },
-    { id: 16, name: "Sombra", price: 1000, image: "sombra.jpg", categoria: "maquillaje" },
-    { id: 17, name: "Bálsamo labial", price: 1000, image: "balsamo-labial.jpg", categoria: "rostro" },
-    { id: 18, name: "Labial", price: 1000, image: "labial.jpg", categoria: "maquillaje" },
-    { id: 19, name: "Jabones saponificados", price: 1000, image: "jabones-saponificados.jpg", categoria: "cuerpo" },
-    { id: 20, name: "Agua micelar", price: 1000, image: "agua-micelar.jpg", categoria: "rostro" },
-    { id: 21, name: "Gel contorno de ojos", price: 1000, image: "gel-contorno-ojos.jpg", categoria: "rostro" },
-    { id: 22, name: "Óleo gel para dolores articulares", price: 1000, image: "oleo-gel-dolores.jpg", categoria: "otros" },
-    { id: 23, name: "Crema pañalera", price: 1000, image: "crema-panalera.jpg", categoria: "otros" },
-    { id: 24, name: "Crema facial", price: 1000, image: "crema-facial.jpg", categoria: "rostro" }
-]
+{
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Shampoo sólido",
+      "descripcion": "Shampoo sólido artesanal para todo tipo de cabello",
+      "imagen": "shampoo-solido-principal.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "familia",
+      "activo": true,
+      "variantes": [
+        { "id": 101, "nombre": "Shampoo sólido - Seborrea/picor", "precio": 12000 },
+        { "id": 102, "nombre": "Shampoo sólido - Pelo seco", "precio": 12000 },
+        { "id": 103, "nombre": "Shampoo sólido - Pelo graso", "precio": 12000 },
+        { "id": 104, "nombre": "Shampoo sólido - Todo tipo de pelo", "precio": 12000 },
+        { "id": 105, "nombre": "Shampoo sólido - Stop caída", "precio": 12000 },
+        { "id": 106, "nombre": "Shampoo sólido - Rulos", "precio": 12000 },
+        { "id": 107, "nombre": "Shampoo sólido - Lacios", "precio": 12000 }
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Tónico capilar 60 cc",
+      "descripcion": "Tónico capilar fortalecedor y para dermatitis",
+      "imagen": "tonico-capilar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "familia",
+      "activo": true,
+      "variantes": [
+        { "id": 201, "nombre": "Tónico capilar Fortalecedor", "precio": 7500 },
+        { "id": 202, "nombre": "Tónico capilar Dermatitis/seborrea", "precio": 7500 }
+      ]
+    },
+    {
+      "id": 3,
+      "nombre": "Acondicionador sólido",
+      "descripcion": "Acondicionador sólido nutritivo",
+      "imagen": "acondicionador-solido.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "familia",
+      "activo": true,
+      "variantes": [
+        { "id": 301, "nombre": "Acondicionador sólido - Todo tipo de pelo", "precio": 12000 },
+        { "id": 302, "nombre": "Acondicionador sólido - Stop caída", "precio": 12000 },
+        { "id": 303, "nombre": "Acondicionador sólido - Rulos", "precio": 12000 }
+      ]
+    },
+    {
+      "id": 4,
+      "nombre": "Acondicionador en crema 200 cc",
+      "descripcion": "Acondicionador en crema para todo tipo de cabello",
+      "imagen": "acondicionador-crema.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "familia",
+      "activo": true,
+      "variantes": [
+        { "id": 401, "nombre": "Acondicionador en crema - Todo tipo de pelo", "precio": 8000 },
+        { "id": 402, "nombre": "Acondicionador en crema - Stop caída", "precio": 8000 },
+        { "id": 403, "nombre": "Acondicionador en crema - Pelo seco", "precio": 8000 },
+        { "id": 404, "nombre": "Acondicionador en crema - Pelo graso", "precio": 8000 }
+      ]
+    },
+    {
+      "id": 5,
+      "nombre": "Acondicionador para peinar sin enjuague 125 cc",
+      "descripcion": "Acondicionador sin enjuague para peinar",
+      "precio": 8000,
+      "imagen": "acondicionador-peinar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 8,
+      "nombre": "Protector térmico capilar 60 cc",
+      "descripcion": "Protector térmico para cabello",
+      "precio": 9000,
+      "imagen": "protector-termico.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 9,
+      "nombre": "Óleo capilar para puntas abiertas 10 cc",
+      "descripcion": "Óleo nutritivo para puntas abiertas",
+      "precio": 5000,
+      "imagen": "oleo-capilar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 10,
+      "nombre": "Mascarilla capilar 200 cc",
+      "descripcion": "Mascarilla nutritiva para cabello",
+      "precio": 17000,
+      "imagen": "mascarilla-capilar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 11,
+      "nombre": "Crema en barra para afeitar 65 gramos",
+      "descripcion": "Crema en barra para afeitar",
+      "precio": 7000,
+      "imagen": "crema-afeitar-barra.jpg",
+      "categoria": "cuerpo",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 12,
+      "nombre": "Gel capilar 100 gramos",
+      "descripcion": "Gel fijador para cabello",
+      "precio": 5000,
+      "imagen": "gel-capilar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 13,
+      "nombre": "Cremas faciales 50 cc",
+      "descripcion": "Crema facial para todo tipo de piel",
+      "imagen": "cremas-faciales.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "familia",
+      "activo": true,
+      "variantes": [
+        { "id": 1301, "nombre": "Crema facial para piel mixta", "precio": 8000 },
+        { "id": 1302, "nombre": "Crema facial para piel seca", "precio": 8000 },
+        { "id": 1303, "nombre": "Crema facial para piel grasa", "precio": 8000 },
+        { "id": 1304, "nombre": "Crema facial Teens", "precio": 8000 },
+        { "id": 1305, "nombre": "Crema facial unificadora de tono", "precio": 8000 },
+        { "id": 1306, "nombre": "Gel Vitamina C facial", "precio": 8000 }
+      ]
+    },
+    {
+      "id": 14,
+      "nombre": "Crema facial 50 cc (Premium)",
+      "descripcion": "Crema facial con activos específicos",
+      "imagen": "cremas-faciales-premium.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "familia",
+      "activo": true,
+      "variantes": [
+        { "id": 1401, "nombre": "Ácido hialurónico, colágeno y elastina", "precio": 17000 },
+        { "id": 1402, "nombre": "Provitamina B5", "precio": 17000 },
+        { "id": 1403, "nombre": "Niacinamida y ginkgo biloba", "precio": 17000 },
+        { "id": 1404, "nombre": "Ácido salicílico y té verde", "precio": 17000 }
+      ]
+    },
+    {
+      "id": 15,
+      "nombre": "After shave",
+      "descripcion": "After shave refrescante",
+      "precio": 1000,
+      "imagen": "after-shave.jpg",
+      "categoria": "cuerpo",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 16,
+      "nombre": "Crema corporal y manos",
+      "descripcion": "Crema hidratante para cuerpo y manos",
+      "precio": 1000,
+      "imagen": "crema-corporal-manos.jpg",
+      "categoria": "cuerpo",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 17,
+      "nombre": "Crema corporal",
+      "descripcion": "Crema hidratante corporal",
+      "precio": 1000,
+      "imagen": "crema-corporal.jpg",
+      "categoria": "cuerpo",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 18,
+      "nombre": "Sales terapéuticas",
+      "descripcion": "Sales para baño relajante",
+      "precio": 1000,
+      "imagen": "sales-terapeuticas.jpg",
+      "categoria": "cuerpo",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 19,
+      "nombre": "Tónico facial",
+      "descripcion": "Tónico refrescante facial",
+      "precio": 1000,
+      "imagen": "tonico-facial.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 20,
+      "nombre": "Repelente",
+      "descripcion": "Repelente natural",
+      "precio": 1000,
+      "imagen": "repelente.jpg",
+      "categoria": "otros",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 21,
+      "nombre": "Gel de limpieza",
+      "descripcion": "Gel de limpieza facial",
+      "precio": 1000,
+      "imagen": "gel-limpieza.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 22,
+      "nombre": "Crema de limpieza facial",
+      "descripcion": "Crema para limpieza facial",
+      "precio": 1000,
+      "imagen": "crema-limpieza-facial.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 23,
+      "nombre": "Perfumes",
+      "descripcion": "Perfumes artesanales",
+      "precio": 1000,
+      "imagen": "perfumes.jpg",
+      "categoria": "otros",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 24,
+      "nombre": "Lip gloss",
+      "descripcion": "Lip gloss hidratante",
+      "precio": 1000,
+      "imagen": "lip-gloss.jpg",
+      "categoria": "maquillaje",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 25,
+      "nombre": "Serúm facial",
+      "descripcion": "Serum facial revitalizante",
+      "precio": 1000,
+      "imagen": "serum-facial.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 26,
+      "nombre": "Sombra",
+      "descripcion": "Sombra de ojos",
+      "precio": 1000,
+      "imagen": "sombra.jpg",
+      "categoria": "maquillaje",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 27,
+      "nombre": "Bálsamo labial",
+      "descripcion": "Bálsamo labial hidratante",
+      "precio": 1000,
+      "imagen": "balsamo-labial.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 28,
+      "nombre": "Labial",
+      "descripcion": "Labial color",
+      "precio": 1000,
+      "imagen": "labial.jpg",
+      "categoria": "maquillaje",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 29,
+      "nombre": "Jabones saponificados",
+      "descripcion": "Jabones artesanales",
+      "precio": 1000,
+      "imagen": "jabones-saponificados.jpg",
+      "categoria": "cuerpo",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 30,
+      "nombre": "Agua micelar",
+      "descripcion": "Agua micelar limpiadora",
+      "precio": 1000,
+      "imagen": "agua-micelar.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 31,
+      "nombre": "Gel contorno de ojos",
+      "descripcion": "Gel para contorno de ojos",
+      "precio": 1000,
+      "imagen": "gel-contorno-ojos.jpg",
+      "categoria": "rostro",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 32,
+      "nombre": "Óleo gel para dolores articulares",
+      "descripcion": "Óleo gel para dolores articulares",
+      "precio": 1000,
+      "imagen": "oleo-gel-dolores.jpg",
+      "categoria": "otros",
+      "tipo_producto": "simple",
+      "activo": true
+    },
+    {
+      "id": 33,
+      "nombre": "Crema pañalera",
+      "descripcion": "Crema para pañalitis",
+      "precio": 1000,
+      "imagen": "crema-panalera.jpg",
+      "categoria": "otros",
+      "tipo_producto": "simple",
+      "activo": true
+    }
+  ],
+  "promociones": [
+    {
+      "id": 1001,
+      "nombre": "Kit Cabello Completo",
+      "descripcion": "Llevate el shampoo + acondicionador + mascarilla con 25% de descuento",
+      "tipo": "descuento_por_kit",
+      "productos_requeridos": [101, 301, 10],
+      "regla_descuento": {
+        "tipo": "porcentaje",
+        "valor": 25
+      },
+      "activa": true
+    },
+    {
+      "id": 1002,
+      "nombre": "Combo Fortalecedor",
+      "descripcion": "Tónico + Shampoo Stop Caída con 20% OFF",
+      "tipo": "descuento_por_kit",
+      "productos_requeridos": [201, 105],
+      "regla_descuento": {
+        "tipo": "porcentaje",
+        "valor": 20
+      },
+      "activa": true
+    },
+    {
+      "id": 1003,
+      "nombre": "2x1 en Cremas faciales",
+      "descripcion": "Llevá dos cremas faciales de la línea de $8000 y pagá la más económica",
+      "tipo": "compra_2_lleva_1",
+      "productos_aplicables": [1301, 1302, 1303, 1304, 1305, 1306],
+      "regla_descuento": {
+        "tipo": "porcentaje",
+        "valor": 50,
+        "aplica_a": "segundo_producto_menor_valor"
+      },
+      "activa": false
+    },
+    {
+      "id": 1004,
+      "nombre": "15% OFF en protectores térmicos",
+      "descripcion": "15% de descuento en Protector térmico capilar",
+      "tipo": "descuento_directo",
+      "productos_aplicables": [8],
+      "regla_descuento": {
+        "tipo": "porcentaje",
+        "valor": 15
+      },
+      "activa": true
+    },
+    {
+      "id": 1005,
+      "nombre": "Combo Rutina Rulos",
+      "descripcion": "Shampoo para rulos + Acondicionador para rulos + Gel capilar con 30% OFF",
+      "tipo": "descuento_por_kit",
+      "productos_requeridos": [106, 303, 12],
+      "regla_descuento": {
+        "tipo": "porcentaje",
+        "valor": 30
+      },
+      "activa": true
+    }
+  ]
+}
