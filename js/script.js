@@ -1,53 +1,69 @@
 /* ========================================
    SIMPLE - COSMÉTICOS NATURALES
-   Versión Mejorada con Familias y Promociones
+   Script Avanzado: Familias, Variantes y Promociones Automáticas
    ======================================== */
 
 /* === CONFIGURACIÓN === */
 const CONFIG = {
     adminPassword: "simple2025",
-    storageKey: "simple-products",
-    cartKey: "simple-cart",
+    storageKey: "simple-store-data", // Cambiado para englobar todo el JSON
     github: {
         repo: "Alu96hub/Simple",
         branch: "main",
         productsPath: "data/products.json",
-        token: "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"
-    }
-};
-
-/* === DATOS POR DEFECTO (Backup si no hay JSON) === */
-const DEFAULT_DATA = {
-    productos: [],
-    promociones: []
+        token: "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" 
+    },
+    cacheDuration: 5 * 60 * 1000
 };
 
 /* === ESTADO GLOBAL === */
-let appData = { productos: [], promociones: [] };
+let storeData = {
+    configuracion_tienda: {},
+    ofertas_banner: [],
+    productos: [],
+    promociones_automaticas: []
+};
 let cart = [];
 let isAdmin = false;
 let currentCategory = 'todos';
 let domCache = {};
-let currentVariantSelector = null;
 
-/* === CACHE DOM === */
+/* === UTILIDADES DE PERFORMANCE === */
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+    };
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
 function cacheDOM() {
     domCache = {
-        productsContainer: document.getElementById('products-container'),
-        promosContainer: document.getElementById('promos-container'),
-        cartCount: document.getElementById('cart-count'),
-        cartDropdown: document.getElementById('cart-dropdown'),
-        cartItemsContainer: document.getElementById('cart-items'),
-        cartTotalElement: document.getElementById('cart-total-price'),
+        productsContainer: document.getElementById('products-grid') || document.querySelector('.products-container'),
+        offersContainer: document.getElementById('offers-display'),
+        cartCount: document.getElementById('cart-count') || document.querySelector('.cart-count'),
+        cartDropdown: document.getElementById('cart-dropdown') || document.querySelector('.cart-modal'),
+        cartItemsContainer: document.getElementById('cart-items') || document.querySelector('.cart-items'),
+        cartTotalElement: document.getElementById('cart-total-price') || document.querySelector('.cart-total strong'),
         checkoutModal: document.getElementById('checkout-modal'),
-        notification: document.getElementById('notification'),
+        notification: document.getElementById('notification') || document.querySelector('.notification'),
         adminPanel: document.getElementById('admin-panel'),
         adminProductsList: document.getElementById('admin-products-list'),
         filterBtns: document.querySelectorAll('.filter-btn')
     };
 }
 
-/* === FORMATO DE PRECIOS === */
 function formatPrice(price) {
     return new Intl.NumberFormat('es-AR', { 
         style: 'currency', 
@@ -56,626 +72,453 @@ function formatPrice(price) {
     }).format(price).replace('ARS', '$');
 }
 
-/* === NOTIFICACIONES === */
-function showNotification(msg, type = 'success') {
-    const notif = domCache.notification;
-    if (!notif) return;
+/* === GESTIÓN DE DATOS: GITHUB & LOCALSTORAGE === */
+async function loadStoreData() {
+    // 1. Intentar GitHub
+    if (CONFIG.github.token && CONFIG.github.repo) {
+        try {
+            const url = `https://raw.githubusercontent.com/${CONFIG.github.repo}/${CONFIG.github.branch}/${CONFIG.github.productsPath}`;
+            const response = await fetch(url, { cache: 'no-store' });
+            if (response.ok) {
+                storeData = await response.json();
+                saveToLocalStorage();
+                return;
+            }
+        } catch (e) {
+            console.log('⚠️ GitHub no disponible, usando localStorage');
+        }
+    }
     
-    notif.textContent = msg;
-    notif.className = `notification ${type}`;
-    notif.classList.add('show');
-    
-    setTimeout(() => notif.classList.remove('show'), 3000);
+    // 2. Fallback LocalStorage
+    const local = localStorage.getItem(CONFIG.storageKey);
+    if (local) {
+        storeData = JSON.parse(local);
+    }
 }
 
-/* === CARGAR DATOS === */
-async function loadData() {
+function saveToLocalStorage() {
     try {
-        // Intentar cargar desde archivo JSON externo
-        const response = await fetch('data/productos.json');
-        if (response.ok) {
-            appData = await response.json();
-        } else {
-            // Fallback a localStorage
-            const local = localStorage.getItem(CONFIG.storageKey);
-            appData = local ? JSON.parse(local) : DEFAULT_DATA;
-        }
-    } catch (error) {
-        console.log('Usando datos por defecto');
-        appData = DEFAULT_DATA;
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(storeData));
+    } catch (e) {
+        console.warn('⚠️ Error guardando en localStorage');
     }
+}
+
+async function commitToGitHub() {
+    if (!CONFIG.github.token) return false;
+    const url = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${CONFIG.github.productsPath}`;
     
-    // Cargar carrito
-    const savedCart = localStorage.getItem(CONFIG.cartKey);
-    cart = savedCart ? JSON.parse(savedCart) : [];
-}
-
-/* === GUARDAR DATOS === */
-function saveData() {
-    localStorage.setItem(CONFIG.storageKey, JSON.stringify(appData));
-}
-
-function saveCart() {
-    localStorage.setItem(CONFIG.cartKey, JSON.stringify(cart));
-}
-
-/* === OBTENER TODOS LOS PRODUCTOS (incluyendo variantes) === */
-function getAllProducts() {
-    const allProducts = [];
-    
-    appData.productos.forEach(producto => {
-        if (producto.tipo_producto === 'familia' && producto.activo) {
-            producto.variantes.forEach(variante => {
-                allProducts.push({
-                    id: variante.id,
-                    nombre: variante.nombre,
-                    precio: variante.precio,
-                    imagen: producto.imagen,
-                    categoria: producto.categoria,
-                    descripcion: producto.descripcion,
-                    descuento: producto.descuento || 0,
-                    familia_id: producto.id,
-                    activo: true
-                });
-            });
-        } else if (producto.activo) {
-            allProducts.push({
-                id: producto.id,
-                nombre: producto.nombre,
-                precio: producto.precio,
-                imagen: producto.imagen,
-                categoria: producto.categoria,
-                descripcion: producto.descripcion || '',
-                descuento: producto.descuento || 0,
-                activo: true
-            });
+    let sha = '';
+    try {
+        const getResp = await fetch(url, {
+            headers: { 'Authorization': `token ${CONFIG.github.token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (getResp.ok) {
+            const data = await getResp.json();
+            sha = data.sha;
         }
-    });
+    } catch (e) {}
     
-    return allProducts;
-}
-
-/* === RENDERIZAR PROMOCIONES === */
-function renderPromociones() {
-    const container = domCache.promosContainer;
-    if (!container) return;
-    
-    const promosActivas = appData.promociones.filter(p => p.activa);
-    
-    if (promosActivas.length === 0) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    const allProducts = getAllProducts();
-    
-    promosActivas.forEach(promo => {
-        // Calcular precio original y final
-        let precioOriginal = 0;
-        let productosEnPromo = [];
-        
-        if (promo.tipo === 'descuento_por_kit') {
-            productosEnPromo = allProducts.filter(p => promo.productos_requeridos.includes(p.id));
-            precioOriginal = productosEnPromo.reduce((sum, p) => sum + p.precio, 0);
-        }
-        
-        const descuento = promo.regla_descuento.valor;
-        const precioFinal = precioOriginal * (1 - descuento / 100);
-        const ahorro = precioOriginal - precioFinal;
-        
-        const promoCard = document.createElement('div');
-        promoCard.className = 'promo-card';
-        
-        // Usar imagen del primer producto si hay
-        const imagenPromo = productosEnPromo[0]?.imagen || 'promo-default.jpg';
-        
-        promoCard.innerHTML = `
-            <span class="promo-badge">-${descuento}%</span>
-            <img src="assets/productos/${imagenPromo}" 
-                 alt="${promo.nombre}" 
-                 class="promo-image"
-                 loading="lazy"
-                 onerror="this.src='assets/productos/placeholder.jpg'">
-            <div class="promo-info">
-                <h3 class="promo-name">${promo.nombre}</h3>
-                <p class="promo-desc">${promo.descripcion}</p>
-                <div class="promo-price-info">
-                    <div class="promo-original-price">${formatPrice(precioOriginal)}</div>
-                    <div class="promo-final-price">
-                        ${formatPrice(precioFinal)}
-                        <small>c/u</small>
-                    </div>
-                    <div class="promo-savings">Ahorrás ${formatPrice(ahorro)}</div>
-                </div>
-                <button class="promo-btn" data-promo-id="${promo.id}">
-                    <i class="fas fa-gift"></i> Agregar Kit
-                </button>
-            </div>
-        `;
-        
-        container.appendChild(promoCard);
-    });
-    
-    // Event listeners para botones de promo
-    container.querySelectorAll('.promo-btn').forEach(btn => {
-        btn.addEventListener('click', () => addPromoToCart(parseInt(btn.dataset.promoId)));
-    });
-}
-
-/* === AGREGAR PROMO AL CARRITO === */
-function addPromoToCart(promoId) {
-    const promo = appData.promociones.find(p => p.id === promoId);
-    if (!promo) return;
-    
-    const allProducts = getAllProducts();
-    const productosPromo = allProducts.filter(p => promo.productos_requeridos.includes(p.id));
-    
-    // Verificar que todos los productos existen
-    if (productosPromo.length !== promo.productos_requeridos.length) {
-        showNotification('Error: No se encontraron todos los productos', 'error');
-        return;
-    }
-    
-    // Calcular precio con descuento
-    const precioOriginal = productosPromo.reduce((sum, p) => sum + p.precio, 0);
-    const descuento = promo.regla_descuento.valor;
-    const precioFinal = precioOriginal * (1 - descuento / 100);
-    
-    // Crear un item especial de kit en el carrito
-    const kitItem = {
-        id: `kit_${promoId}_${Date.now()}`,
-        nombre: promo.nombre,
-        descripcion: promo.descripcion,
-        precio: precioFinal,
-        precioOriginal: precioOriginal,
-        cantidad: 1,
-        productos: productosPromo.map(p => ({ id: p.id, nombre: p.nombre })),
-        esKit: true,
-        imagen: productosPromo[0]?.imagen
+    // Convertir utf8 a base64 correctamente
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(storeData, null, 2))));
+    const body = {
+        message: `🛍️ Update tienda - ${new Date().toLocaleString('es-AR')}`,
+        content: content,
+        branch: CONFIG.github.branch
     };
+    if (sha) body.sha = sha;
     
-    cart.push(kitItem);
-    saveCart();
-    updateCartUI();
-    showNotification(`✨ ¡${promo.nombre} agregado!`);
+    try {
+        await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${CONFIG.github.token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
-/* === RENDERIZAR PRODUCTOS === */
-function renderProducts(category = 'todos') {
+/* === RENDERIZADO DE OFERTAS BANNER === */
+function renderOffers() {
+    if (!domCache.offersContainer) return;
+    const activeOffers = (storeData.ofertas_banner || []).filter(o => o.activa);
+    
+    if (activeOffers.length === 0) {
+        domCache.offersContainer.parentElement.style.display = 'none';
+        return;
+    }
+
+    domCache.offersContainer.innerHTML = activeOffers.map(offer => `
+        <div class="offer-card">
+            <img src="${offer.imagen}" alt="${offer.titulo}" loading="lazy">
+            <div class="offer-body">
+                <h3 style="color: var(--rosa-principal); margin-bottom: 5px;">${offer.titulo}</h3>
+                <p style="font-size: 0.9rem; color: var(--texto-oscuro);">${offer.descripcion}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+/* === RENDERIZADO DE PRODUCTOS (SOPORTA FAMILIAS) === */
+const debouncedRender = debounce(renderProducts, 100);
+
+function renderProducts(category) {
     currentCategory = category;
     const container = domCache.productsContainer;
     if (!container) return;
     
-    const allProducts = getAllProducts();
-    
-    // Filtrar por categoría
+    const products = storeData.productos || [];
     const filtered = category === 'todos' 
-        ? allProducts
-        : allProducts.filter(p => p.categoria === category);
-    
+        ? products.filter(p => p.activo)
+        : products.filter(p => p.activo && p.categoria === category);
+
     if (filtered.length === 0) {
-        container.innerHTML = '<p class="empty-msg">No hay productos en esta categoría ✨</p>';
+        container.innerHTML = '<p class="empty-msg">No se encontraron productos ✨</p>';
         return;
     }
-    
-    // Ordenar alfabéticamente
-    filtered.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
-    
-    // Colores de categorías
-    const categoryColors = {
-        'cabello': '#2E8B57',
-        'rostro': '#4682B4',
-        'cuerpo': '#8B4513',
-        'maquillaje': '#DDA0DD',
-        'otros': '#666666'
-    };
-    
+
     const fragment = document.createDocumentFragment();
-    
+
     filtered.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.dataset.id = product.id;
         
-        const catColor = categoryColors[product.categoria] || '#666';
-        
-        // Verificar si es parte de una familia
-        const esVariante = product.familia_id !== undefined;
-        
+        let priceHtml = '';
+        let variantHtml = '';
+        let addBtnHtml = '';
+        let defaultPrice = product.precio || 0;
+
+        // Lógica si es Familia (tiene variantes)
+        if (product.tipo_producto === 'familia' && product.variantes) {
+            defaultPrice = product.variantes[0].precio;
+            
+            variantHtml = `
+                <div class="variant-selector-container">
+                    <select class="variant-select" onchange="window.updateCardPrice(this, ${product.id})">
+                        ${product.variantes.map((v, i) => `
+                            <option value="${v.id}" data-price="${v.precio}" data-ing="${v.ingredientes || ''}">
+                                ${v.nombre}
+                            </option>
+                        `).join('')}
+                    </select>
+                </div>
+            `;
+            addBtnHtml = `<button class="btn-add-cart" onclick="window.addFamilyToCart(${product.id}, this)">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                          </button>`;
+        } else {
+            // Lógica si es Simple
+            addBtnHtml = `<button class="btn-add-cart" onclick="window.addSimpleToCart(${product.id})">
+                            <i class="fas fa-cart-plus"></i> Agregar
+                          </button>`;
+        }
+
+        // Precios y Descuentos Visuales
+        if (product.descuento > 0) {
+            const finalPrice = defaultPrice * (1 - product.descuento / 100);
+            priceHtml = `
+                <div class="discount-badge-card">${product.descuento}% OFF</div>
+                <div class="product-price-container">
+                    <span class="price-old">${formatPrice(defaultPrice)}</span>
+                    <span class="price-current" id="price-display-${product.id}">${formatPrice(finalPrice)}</span>
+                </div>
+            `;
+        } else {
+            priceHtml = `
+                <div class="product-price-container">
+                    <span class="price-current" id="price-display-${product.id}">${formatPrice(defaultPrice)}</span>
+                </div>
+            `;
+        }
+
         card.innerHTML = `
             <div class="product-img">
-                <span class="product-category" style="background:${catColor}">
-                    ${product.categoria.toUpperCase()}
-                </span>
-                ${esVariante ? '<span class="product-variant-badge">Variante</span>' : ''}
-                <img src="assets/productos/${product.imagen}" 
-                     alt="${product.nombre}" 
-                     loading="lazy"
-                     onerror="this.src='assets/productos/placeholder.jpg'">
+                <span class="product-category">${product.categoria}</span>
+                <img src="assets/productos/${product.imagen}" alt="${product.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x300/FFF0F5/FF69B4?text=Simple';">
             </div>
             <div class="product-content">
                 <h3 class="product-title">${product.nombre}</h3>
-                <p class="product-price">${formatPrice(product.precio)}</p>
-                <p class="product-desc-small">${product.descripcion.substring(0, 60)}...</p>
-                <button class="btn-add-cart" data-id="${product.id}">
-                    <i class="fas fa-cart-plus"></i> Agregar
-                </button>
+                <p class="product-description-short" id="desc-display-${product.id}">
+                    ${product.tipo_producto === 'familia' ? (product.variantes[0].ingredientes || product.descripcion_base) : (product.ingredientes || product.descripcion || '')}
+                </p>
+                ${variantHtml}
+                ${priceHtml}
+                ${addBtnHtml}
             </div>
         `;
-        
         fragment.appendChild(card);
     });
-    
+
     container.innerHTML = '';
     container.appendChild(fragment);
-    
-    // Event listeners para botones "Agregar"
-    container.querySelectorAll('.btn-add-cart').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = parseInt(btn.dataset.id);
-            const product = allProducts.find(p => p.id === id);
-            if (product) addToCart(product);
-        });
-    });
 }
 
-/* === AGREGAR AL CARRITO === */
-function addToCart(product) {
-    const existing = cart.find(item => 
-        !item.esKit && item.id === product.id
-    );
+// Función que actualiza el precio y descripción cuando cambias la variante en el select
+window.updateCardPrice = function(selectElement, productId) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const newPrice = parseFloat(selectedOption.dataset.price);
+    const newIng = selectedOption.dataset.ing;
+    const product = storeData.productos.find(p => p.id === productId);
     
+    let finalPrice = newPrice;
+    if (product.descuento > 0) {
+        finalPrice = newPrice * (1 - product.descuento / 100);
+    }
+    
+    document.getElementById(`price-display-${productId}`).textContent = formatPrice(finalPrice);
+    
+    if (newIng) {
+        document.getElementById(`desc-display-${productId}`).textContent = newIng;
+    }
+};
+
+/* === MOTOR DEL CARRITO Y PROMOCIONES AUTOMÁTICAS === */
+window.addSimpleToCart = function(productId) {
+    const product = storeData.productos.find(p => p.id === productId);
+    if (!product) return;
+    
+    let price = product.precio;
+    if (product.descuento > 0) price = price * (1 - product.descuento / 100);
+
+    const cartItem = {
+        cartId: `simple_${product.id}`,
+        baseId: product.id,
+        name: product.nombre,
+        price: price,
+        image: product.imagen,
+        quantity: 1
+    };
+    
+    processAddToCart(cartItem);
+};
+
+window.addFamilyToCart = function(productId, btnElement) {
+    const product = storeData.productos.find(p => p.id === productId);
+    const select = btnElement.parentElement.querySelector('.variant-select');
+    const variantId = parseInt(select.value);
+    const variant = product.variantes.find(v => v.id === variantId);
+    
+    let price = variant.precio;
+    if (product.descuento > 0) price = price * (1 - product.descuento / 100);
+
+    const cartItem = {
+        cartId: `var_${variant.id}`,
+        baseId: product.id,
+        variantId: variant.id,
+        name: `${product.nombre} - ${variant.nombre}`,
+        price: price,
+        image: product.imagen,
+        quantity: 1
+    };
+    
+    processAddToCart(cartItem);
+};
+
+function processAddToCart(newItem) {
+    const existing = cart.find(item => item.cartId === newItem.cartId);
     if (existing) {
-        existing.cantidad++;
+        existing.quantity++;
     } else {
-        cart.push({
-            id: product.id,
-            nombre: product.nombre,
-            precio: product.precio,
-            imagen: product.imagen,
-            cantidad: 1,
-            esKit: false
-        });
+        cart.push(newItem);
     }
     
-    saveCart();
+    saveCartLocal();
     updateCartUI();
-    showNotification(`✨ ¡${product.nombre} agregado!`);
-    
-    // Animación en el carrito
-    const cartIcon = document.querySelector('.cart-icon-container');
-    if (cartIcon) {
-        cartIcon.style.transform = 'scale(1.2)';
-        setTimeout(() => cartIcon.style.transform = 'scale(1)', 150);
-    }
+    showNotification(`¡Agregado al carrito! 🛍️`);
 }
 
-/* === ELIMINAR DEL CARRITO === */
-function removeFromCart(index) {
-    cart.splice(index, 1);
-    saveCart();
+function removeFromCart(cartId) {
+    cart = cart.filter(item => item.cartId !== cartId);
+    saveCartLocal();
     updateCartUI();
-    showNotification('Producto eliminado', 'info');
 }
 
-/* === ACTUALIZAR UI DEL CARRITO === */
+function saveCartLocal() {
+    localStorage.setItem('simple-cart', JSON.stringify(cart));
+}
+
 function updateCartUI() {
-    const { cartCount, cartItemsContainer, cartTotalElement } = domCache;
-    if (!cartCount || !cartItemsContainer || !cartTotalElement) return;
+    if (!domCache.cartItemsContainer) return;
     
-    // Actualizar contador
-    const totalCount = cart.reduce((acc, item) => acc + item.cantidad, 0);
-    cartCount.textContent = totalCount;
-    cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
-    
-    // Renderizar items
-    cartItemsContainer.innerHTML = '';
-    let total = 0;
+    const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+    if (domCache.cartCount) {
+        domCache.cartCount.textContent = totalCount;
+        domCache.cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
+    }
+
+    domCache.cartItemsContainer.innerHTML = '';
     
     if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío ✨</p>';
-    } else {
-        cart.forEach((item, index) => {
-            const itemTotal = item.precio * item.cantidad;
-            total += itemTotal;
-            
-            const itemEl = document.createElement('div');
-            itemEl.className = 'cart-item';
-            
-            if (item.esKit) {
-                itemEl.innerHTML = `
-                    <div class="cart-item-info kit-item">
-                        <h4>🎁 ${item.nombre}</h4>
-                        <p class="kit-products">Incluye: ${item.productos.map(p => p.nombre).join(', ')}</p>
-                        <p>${item.cantidad} × ${formatPrice(item.precio)} = <strong>${formatPrice(itemTotal)}</strong></p>
-                        <p class="original-price">Antes: ${formatPrice(item.precioOriginal)}</p>
-                    </div>
-                    <i class="fas fa-trash remove-item" data-index="${index}" title="Eliminar"></i>
-                `;
-            } else {
-                itemEl.innerHTML = `
-                    <div class="cart-item-info">
-                        <h4>${item.nombre}</h4>
-                        <p>${item.cantidad} × ${formatPrice(item.precio)} = <strong>${formatPrice(itemTotal)}</strong></p>
-                    </div>
-                    <i class="fas fa-trash remove-item" data-index="${index}" title="Eliminar"></i>
-                `;
-            }
-            
-            cartItemsContainer.appendChild(itemEl);
-        });
-        
-        // Event listeners para eliminar
-        cartItemsContainer.querySelectorAll('.remove-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                removeFromCart(parseInt(btn.dataset.index));
-            });
-        });
-    }
-    
-    cartTotalElement.textContent = formatPrice(total);
-}
-
-/* === PROCESAR PEDIDO POR WHATSAPP === */
-function processWhatsAppOrder(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('customer-name')?.value.trim();
-    const address = document.getElementById('customer-address')?.value.trim();
-    const comments = document.getElementById('customer-comments')?.value.trim();
-
-    if (!name || !address) {
-        showNotification('⚠️ Completá nombre y dirección', 'error');
+        domCache.cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío ✨</p>';
+        if (domCache.cartTotalElement) domCache.cartTotalElement.textContent = formatPrice(0);
         return;
     }
 
-    let message = `¡Hola Simple! 👋 Quiero realizar un pedido:\n\n`;
+    // Calcular Subtotal
+    let subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     
-    cart.forEach(item => {
-        if (item.esKit) {
-            message += `🎁 *KIT:* ${item.nombre}\n`;
-            message += `   Incluye: ${item.productos.map(p => p.nombre).join(', ')}\n`;
-            message += `   ${item.cantidad} × ${formatPrice(item.precio)}\n`;
-        } else {
-            message += `▪️ ${item.cantidad} × ${item.nombre} (${formatPrice(item.precio * item.cantidad)})\n`;
+    // Motor de Promociones
+    let totalDiscount = 0;
+    let appliedPromosText = [];
+    const promos = storeData.promociones_automaticas || [];
+
+    promos.forEach(promo => {
+        if (!promo.activa) return;
+        
+        let hasAllRequirements = true;
+        let eligibleCartItems = [];
+
+        promo.productos_requeridos.forEach(req => {
+            let foundItem;
+            if (req.id_especifico) {
+                foundItem = cart.find(i => i.baseId === req.id_especifico || i.variantId === req.id_especifico);
+            } else if (req.base_id) {
+                foundItem = cart.find(i => i.baseId === req.base_id);
+            }
+            
+            if (!foundItem) hasAllRequirements = false;
+            else eligibleCartItems.push(foundItem);
+        });
+
+        if (hasAllRequirements) {
+            // Aplicar descuento a esos items
+            let promoBaseValue = eligibleCartItems.reduce((sum, item) => sum + item.price, 0); 
+            let discountValue = promoBaseValue * (promo.descuento_porcentaje / 100);
+            totalDiscount += discountValue;
+            appliedPromosText.push(`${promo.nombre} (-${formatPrice(discountValue)})`);
         }
     });
 
-    const total = cart.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-    message += `\n💰 *TOTAL: ${formatPrice(total)}*\n\n`;
-    message += `👤 *Datos:*\nNombre: ${name}\nDirección: ${address}\n`;
-    if (comments) message += `Nota: ${comments}\n`;
+    const finalTotal = subtotal - totalDiscount;
 
-    const url = `https://wa.me/5493434747844?text=${encodeURIComponent(message)}`;
+    // Render Items
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        const el = document.createElement('div');
+        el.className = 'cart-item';
+        el.innerHTML = `
+            <img src="assets/productos/${item.image}" alt="${item.name}">
+            <div class="cart-item-info" style="flex:1;">
+                <h4>${item.name}</h4>
+                <p>${item.quantity} × ${formatPrice(item.price)}</p>
+            </div>
+            <i class="fas fa-trash remove-item" style="color:red; cursor:pointer;" onclick="removeFromCart('${item.cartId}')"></i>
+        `;
+        domCache.cartItemsContainer.appendChild(el);
+    });
+
+    // Render Promos
+    if (appliedPromosText.length > 0) {
+        const promoDiv = document.createElement('div');
+        promoDiv.style.padding = '10px';
+        promoDiv.style.background = '#e8f5e9';
+        promoDiv.style.borderRadius = '8px';
+        promoDiv.style.marginTop = '10px';
+        promoDiv.innerHTML = `<p style="color:#2e7d32; font-weight:bold; font-size:0.9rem; margin-bottom:5px;">Promociones aplicadas:</p>
+                              <ul style="color:#2e7d32; font-size:0.85rem;">
+                                ${appliedPromosText.map(t => `<li>✅ ${t}</li>`).join('')}
+                              </ul>`;
+        domCache.cartItemsContainer.appendChild(promoDiv);
+    }
+
+    if (domCache.cartTotalElement) {
+        domCache.cartTotalElement.innerHTML = `
+            ${totalDiscount > 0 ? `<span style="text-decoration:line-through; font-size:0.9rem; color:#999; display:block;">Subtotal: ${formatPrice(subtotal)}</span>` : ''}
+            ${formatPrice(finalTotal)}
+        `;
+    }
+}
+
+/* === CHECKOUT Y WHATSAPP === */
+function processWhatsAppOrder(e) {
+    e.preventDefault();
+    const name = document.getElementById('customer-name')?.value.trim() || 'Cliente';
+    const address = document.getElementById('customer-address')?.value.trim() || 'Retiro';
     
-    // Limpiar carrito
+    let message = `¡Hola Simple! 👋 Mi nombre es ${name}.\nQuiero realizar el siguiente pedido:\n\n`;
+    
+    let subtotal = 0;
+    cart.forEach(item => {
+        const lineTotal = item.price * item.quantity;
+        subtotal += lineTotal;
+        message += `▪️ ${item.quantity}x *${item.name}* -> ${formatPrice(lineTotal)}\n`;
+    });
+
+    // Calcular descuentos igual que en UI
+    let totalDiscount = 0;
+    const promos = storeData.promociones_automaticas || [];
+    promos.forEach(promo => {
+        if (!promo.activa) return;
+        let hasAllRequirements = true;
+        let eligibleCartItems = [];
+        promo.productos_requeridos.forEach(req => {
+            let foundItem = req.id_especifico ? cart.find(i => i.baseId === req.id_especifico || i.variantId === req.id_especifico) : cart.find(i => i.baseId === req.base_id);
+            if (!foundItem) hasAllRequirements = false;
+            else eligibleCartItems.push(foundItem);
+        });
+        if (hasAllRequirements) {
+            let promoBaseValue = eligibleCartItems.reduce((sum, item) => sum + item.price, 0); 
+            let discountValue = promoBaseValue * (promo.descuento_porcentaje / 100);
+            totalDiscount += discountValue;
+            message += `\n🎁 *Promo Aplicada:* ${promo.nombre} (-${formatPrice(discountValue)})`;
+        }
+    });
+
+    const finalTotal = subtotal - totalDiscount;
+    message += `\n\n💰 *TOTAL A PAGAR: ${formatPrice(finalTotal)}*`;
+    message += `\n📍 Dirección de entrega: ${address}`;
+
+    const phone = storeData.configuracion_tienda?.whatsapp || CONFIG.config.whatsapp || "5493430000000";
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    
     cart = [];
-    saveCart();
+    saveCartLocal();
     updateCartUI();
-    closeModal();
-    
+    document.getElementById('checkout-modal').style.display = 'none';
     window.open(url, '_blank');
-    showNotification('📱 Redirigiendo a WhatsApp...');
 }
 
-/* === MODAL === */
-function closeModal() {
-    if (domCache.checkoutModal) domCache.checkoutModal.style.display = 'none';
-    document.getElementById('checkout-form')?.reset();
+/* === NOTIFICACIONES === */
+function showNotification(msg) {
+    if (!domCache.notification) return;
+    domCache.notification.textContent = msg;
+    domCache.notification.classList.remove('show');
+    void domCache.notification.offsetWidth;
+    domCache.notification.classList.add('show');
+    setTimeout(() => domCache.notification.classList.remove('show'), 3000);
 }
 
-/* === EVENT LISTENERS === */
-function setupEventListeners() {
+/* === INICIALIZACIÓN === */
+document.addEventListener('DOMContentLoaded', async () => {
+    cacheDOM();
+    
+    // Recuperar carrito local
+    const savedCart = localStorage.getItem('simple-cart');
+    if (savedCart) cart = JSON.parse(savedCart);
+
+    await loadStoreData();
+    renderOffers();
+    renderProducts('todos');
+    updateCartUI();
+
     // Filtros
     domCache.filterBtns?.forEach(btn => {
         btn.addEventListener('click', (e) => {
             domCache.filterBtns.forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
-            renderProducts(e.currentTarget.dataset.category);
+            debouncedRender(e.currentTarget.dataset.category);
         });
     });
 
-    // Carrito
-    const cartBtn = document.getElementById('cart-btn');
-    const closeCartBtn = document.getElementById('close-cart');
-    
-    cartBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        domCache.cartDropdown?.classList.toggle('active');
-    });
-    
-    closeCartBtn?.addEventListener('click', () => {
-        domCache.cartDropdown?.classList.remove('active');
-    });
-    
-    // Cerrar carrito al hacer click fuera
-    document.addEventListener('click', (e) => {
-        if (domCache.cartDropdown?.classList.contains('active') && 
-            !domCache.cartDropdown.contains(e.target) && 
-            !cartBtn?.contains(e.target)) {
-            domCache.cartDropdown.classList.remove('active');
-        }
-    });
-
-    // Menú móvil
-    const menuBtn = document.getElementById('menu-btn');
-    const navbar = document.querySelector('.navbar');
-    
-    if (menuBtn && navbar) {
-        menuBtn.addEventListener('click', () => {
-            navbar.classList.toggle('active');
-            const icon = menuBtn.querySelector('i');
-            icon?.classList.toggle('fa-bars');
-            icon?.classList.toggle('fa-times');
-        });
-        
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navbar.classList.remove('active');
-                const icon = menuBtn.querySelector('i');
-                icon?.classList.add('fa-bars');
-                icon?.classList.remove('fa-times');
-            });
-        });
-    }
-
-    // Checkout
-    const checkoutBtn = document.getElementById('checkout-btn');
-    checkoutBtn?.addEventListener('click', () => {
-        if (cart.length === 0) {
-            showNotification('El carrito está vacío ✨', 'info');
-            return;
-        }
-        domCache.cartDropdown?.classList.remove('active');
-        if (domCache.checkoutModal) domCache.checkoutModal.style.display = 'flex';
-    });
-
-    // Cerrar modales
-    document.querySelectorAll('.close-modal, .close-modal-btn').forEach(btn => {
-        btn?.addEventListener('click', closeModal);
-    });
-    
-    window.addEventListener('click', (e) => {
-        if (e.target === domCache.checkoutModal) closeModal();
-    });
-
-    // Formulario WhatsApp
+    // Modales de carrito
+    document.getElementById('cart-btn')?.addEventListener('click', () => domCache.cartDropdown?.classList.add('active'));
+    document.getElementById('close-cart')?.addEventListener('click', () => domCache.cartDropdown?.classList.remove('active'));
     document.getElementById('checkout-form')?.addEventListener('submit', processWhatsAppOrder);
-
-    // Admin
-    setupAdminListeners();
-}
-
-/* === ADMIN === */
-function setupAdminListeners() {
-    const adminAccessBtn = document.getElementById('admin-access-btn');
-    const adminLoginModal = document.getElementById('admin-login-modal');
-    const closeAdminLogin = document.getElementById('close-admin-login');
-    
-    adminAccessBtn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (adminLoginModal) adminLoginModal.style.display = 'flex';
-    });
-    
-    closeAdminLogin?.addEventListener('click', () => {
-        if (adminLoginModal) adminLoginModal.style.display = 'none';
-    });
-    
-    window.addEventListener('click', (e) => {
-        if (e.target === adminLoginModal) {
-            adminLoginModal.style.display = 'none';
-        }
-    });
-
-    // Login
-    document.getElementById('admin-login-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const password = document.getElementById('admin-password')?.value;
-        
-        if (password === CONFIG.adminPassword) {
-            isAdmin = true;
-            if (adminLoginModal) adminLoginModal.style.display = 'none';
-            
-            if (domCache.adminPanel) domCache.adminPanel.style.display = 'block';
-            if (domCache.productsContainer) domCache.productsContainer.style.display = 'none';
-            document.querySelector('.categories-filter')?.style.setProperty('display', 'none', 'important');
-            
-            renderAdminProductsList();
-            showNotification('🔓 Sesión de admin iniciada');
-            document.getElementById('admin-password').value = '';
-        } else {
-            alert('❌ Contraseña incorrecta');
-        }
-    });
-
-    // Logout
-    document.getElementById('logout-admin-btn')?.addEventListener('click', () => {
-        isAdmin = false;
-        if (domCache.adminPanel) domCache.adminPanel.style.display = 'none';
-        if (domCache.productsContainer) domCache.productsContainer.style.display = '';
-        document.querySelector('.categories-filter')?.style.removeProperty('display');
-        
-        renderProducts(currentCategory);
-        showNotification('🔒 Sesión cerrada');
-    });
-}
-
-/* === RENDER LISTA DE PRODUCTOS PARA ADMIN === */
-function renderAdminProductsList() {
-    const container = domCache.adminProductsList;
-    if (!container) return;
-    
-    container.innerHTML = '<h4 style="margin-bottom:15px;">📦 Productos y Familias</h4>';
-    
-    appData.productos.forEach(producto => {
-        const productCard = document.createElement('div');
-        productCard.className = 'admin-product-card';
-        
-        if (producto.tipo_producto === 'familia') {
-            // Mostrar familia con sus variantes
-            productCard.innerHTML = `
-                <div class="admin-familia-header">
-                    <img src="assets/productos/${producto.imagen}" 
-                         alt="${producto.nombre}"
-                         onerror="this.src='assets/productos/placeholder.jpg'">
-                    <div class="admin-familia-info">
-                        <h4>🏷️ ${producto.nombre} (Familia)</h4>
-                        <p class="product-desc">${producto.descripcion}</p>
-                        <p><strong>Categoría:</strong> ${producto.categoria}</p>
-                        <p><small>Activo: ${producto.activo ? '✅' : '❌'}</small></p>
-                    </div>
-                </div>
-                <div class="admin-variantes">
-                    <h5>Variantes:</h5>
-                    ${producto.variantes.map(v => `
-                        <div class="admin-variante-item">
-                            <span>${v.nombre}</span>
-                            <span>${formatPrice(v.precio)}</span>
-                            <span>ID: ${v.id}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else {
-            // Producto simple
-            productCard.innerHTML = `
-                <div class="admin-product-simple">
-                    <img src="assets/productos/${producto.imagen}" 
-                         alt="${producto.nombre}"
-                         onerror="this.src='assets/productos/placeholder.jpg'">
-                    <div class="admin-product-info">
-                        <h4>${producto.nombre}</h4>
-                        <p class="product-desc">${producto.descripcion || ''}</p>
-                        <p><strong>Precio:</strong> ${formatPrice(producto.precio)}</p>
-                        <p><strong>Categoría:</strong> ${producto.categoria}</p>
-                        <p><small>Activo: ${producto.activo ? '✅' : '❌'} | ID: ${producto.id}</small></p>
-                    </div>
-                </div>
-            `;
-        }
-        
-        container.appendChild(productCard);
-    });
-}
-
-/* === INICIALIZACIÓN === */
-document.addEventListener('DOMContentLoaded', async () => {
-    // Cachear elementos DOM
-    cacheDOM();
-    
-    // Cargar datos
-    await loadData();
-    
-    // Renderizar todo
-    renderPromociones();
-    renderProducts('todos');
-    updateCartUI();
-    
-    // Configurar event listeners
-    setupEventListeners();
-    
-    console.log('✅ Simple Cosméticos cargado');
-    console.log('📦 Productos:', getAllProducts().length);
-    console.log('🎁 Promociones:', appData.promociones.filter(p => p.activa).length);
 });
