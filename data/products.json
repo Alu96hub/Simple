@@ -1,415 +1,470 @@
 {
+  "configuracion_tienda": {
+    "nombre": "Simple - Cosméticos Naturales",
+    "whatsapp": "5493430000000",
+    "moneda": "$"
+  },
+  "ofertas_banner": [
+    {
+      "id": "banner_1",
+      "titulo": "¡Promoción de Lanzamiento!",
+      "descripcion": "Descubre nuestra nueva línea capilar con ingredientes 100% naturales.",
+      "imagen": "assets/hero-bg.jpg",
+      "activa": true
+    },
+    {
+      "id": "banner_2",
+      "titulo": "Kit Relax",
+      "descripcion": "Lleva 3 aceites esenciales con un 15% de descuento.",
+      "imagen": "assets/hero-bg.jpg",
+      "activa": false
+    },
+    {
+      "id": "banner_3",
+      "titulo": "Envío Gratis",
+      "descripcion": "En compras superiores a $30.000 en la zona.",
+      "imagen": "assets/hero-bg.jpg",
+      "activa": false
+    }
+  ],
   "productos": [
     {
       "id": 1,
       "nombre": "Shampoo sólido",
-      "descripcion": "Shampoo sólido artesanal: Aceite de coco, manteca de karité, arcilla, romero, ortiga, aceite de ricino, biopéptidos, cafeína, proteína de trigo, keratina",
+      "precio": 12000,
       "imagen": "shampoo-solido-principal.jpg",
       "categoria": "cabello",
       "tipo_producto": "familia",
       "activo": true,
       "descuento": 0,
+      "promo_eligible": true,
       "variantes": [
-        { "id": 101, "nombre": "Shampoo sólido - Seborrea/picor", "precio": 12000 },
-        { "id": 102, "nombre": "Shampoo sólido - Pelo seco", "precio": 12000 },
-        { "id": 103, "nombre": "Shampoo sólido - Pelo graso", "precio": 12000 },
-        { "id": 104, "nombre": "Shampoo sólido - Todo tipo de pelo", "precio": 12000 },
-        { "id": 105, "nombre": "Shampoo sólido - Stop caída", "precio": 12000 },
-        { "id": 106, "nombre": "Shampoo sólido - Rulos", "precio": 12000 },
-        { "id": 107, "nombre": "Shampoo sólido - Lacios", "precio": 12000 }
+        { "id": 101, "especificidad": "Seborrea/picor", "ingredientes": "Aceite de coco, manteca de karité, arcilla, romero, ortiga, biopéptidos, cafeína", "activo": true },
+        { "id": 102, "especificidad": "Pelo seco", "ingredientes": "Aceite de argán, manteca de karité, proteína de trigo, keratina", "activo": true },
+        { "id": 103, "especificidad": "Pelo graso", "ingredientes": "Arcilla verde, aceite de ricino, proteína de trigo, keratina", "activo": true },
+        { "id": 104, "especificidad": "Todo tipo de pelo", "ingredientes": "Mezcla balanceada de aceites naturales y vitaminas", "activo": true },
+        { "id": 105, "especificidad": "Stop caída", "ingredientes": "Cafeína, extracto de ortiga y romero potenciado", "activo": true },
+        { "id": 106, "especificidad": "Rulos", "ingredientes": "Aceite de coco y manteca de karité extra hidratante", "activo": true },
+        { "id": 107, "especificidad": "Lacios", "ingredientes": "Proteína de seda y keratina", "activo": true }
       ]
     },
     {
       "id": 2,
-      "nombre": "Tónico capilar 60 cc",
-      "descripcion": "Tónico capilar: Extracto de romero, biotina, mentol, zinc, cafeína",
-      "imagen": "tonico-capilar.jpg",
-      "categoria": "cabello",
-      "tipo_producto": "familia",
+      "nombre": "Crema corporal y manos",
+      "precio": 1000,
+      "imagen": "crema-corporal-manos.jpg",
+      "categoria": "cuerpo",
+      "ingredientes": "Vitamina E, Aloe Vera, Glicerina vegetal",
+      "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0,
-      "variantes": [
-        { "id": 201, "nombre": "Tónico capilar Fortalecedor", "precio": 7500 },
-        { "id": 202, "nombre": "Tónico capilar Dermatitis/seborrea", "precio": 7500 }
-      ]
+      "descuento": 10,
+      "promo_eligible": true
     },
     {
       "id": 3,
+      "nombre": "Crema corporal",
+      "precio": 1000,
+      "imagen": "crema-corporal.jpg",
+      "categoria": "cuerpo",
+      "ingredientes": "Manteca de cacao y aceites nutritivos",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 4,
+      "nombre": "Sales terapéuticas",
+      "precio": 1000,
+      "imagen": "sales-terapeuticas.jpg",
+      "categoria": "cuerpo",
+      "ingredientes": "Sal marina, sales de Epsom, aceites esenciales",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 5,
+      "nombre": "Jabón de coco",
+      "precio": 1000,
+      "imagen": "jabon-coco.jpg",
+      "categoria": "jabones",
+      "ingredientes": "Aceite de coco puro saponificado",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 6,
+      "nombre": "Jabón de oliva y coco",
+      "precio": 1000,
+      "imagen": "jabon-oliva-coco.jpg",
+      "categoria": "jabones",
+      "ingredientes": "Aceite de oliva virgen y aceite de coco",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 7,
+      "nombre": "Jabón de carbón activado",
+      "precio": 1000,
+      "imagen": "jabon-carbon-activado.jpg",
+      "categoria": "jabones",
+      "ingredientes": "Carbón activado vegetal, aceite de té verde",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 8,
+      "nombre": "Jabón de caléndula y manzanilla",
+      "precio": 1000,
+      "imagen": "jabon-calendula-manzanilla.jpg",
+      "categoria": "jabones",
+      "ingredientes": "Extracto de caléndula, flores de manzanilla",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 9,
+      "nombre": "Jabón de chocolate y menta",
+      "precio": 1000,
+      "imagen": "jabon-chocolate-menta.jpg",
+      "categoria": "jabones",
+      "ingredientes": "Cacao puro, aceite esencial de menta",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 10,
       "nombre": "Acondicionador sólido",
-      "descripcion": "Acondicionador sólido: Manteca de cacao, aceite de argán, proteína de trigo, keratina vegetal",
+      "precio": 12000,
       "imagen": "acondicionador-solido.jpg",
       "categoria": "cabello",
       "tipo_producto": "familia",
       "activo": true,
       "descuento": 0,
+      "promo_eligible": true,
       "variantes": [
-        { "id": 301, "nombre": "Acondicionador sólido - Todo tipo de pelo", "precio": 12000 },
-        { "id": 302, "nombre": "Acondicionador sólido - Stop caída", "precio": 12000 },
-        { "id": 303, "nombre": "Acondicionador sólido - Rulos", "precio": 12000 }
+        { "id": 301, "especificidad": "Hidratación profunda", "ingredientes": "BTMS, manteca de karité, aceite de argán", "activo": true },
+        { "id": 302, "especificidad": "Ligero/Grado", "ingredientes": "BTMS, aceite de jojoba, extracto de limón", "activo": true }
       ]
-    },
-    {
-      "id": 4,
-      "nombre": "Acondicionador en crema 200 cc",
-      "descripcion": "Acondicionador en crema: Aceite de coco, manteca de karité, vitamina E, pantenol",
-      "imagen": "acondicionador-crema.jpg",
-      "categoria": "cabello",
-      "tipo_producto": "familia",
-      "activo": true,
-      "descuento": 0,
-      "variantes": [
-        { "id": 401, "nombre": "Acondicionador en crema - Todo tipo de pelo", "precio": 8000 },
-        { "id": 402, "nombre": "Acondicionador en crema - Stop caída", "precio": 8000 },
-        { "id": 403, "nombre": "Acondicionador en crema - Pelo seco", "precio": 8000 },
-        { "id": 404, "nombre": "Acondicionador en crema - Pelo graso", "precio": 8000 }
-      ]
-    },
-    {
-      "id": 5,
-      "nombre": "Acondicionador para peinar sin enjuague 125 cc",
-      "descripcion": "Acondicionador sin enjuague: Aceite de argán, proteína de trigo, vitamina B5, silicona vegetal",
-      "precio": 8000,
-      "imagen": "acondicionador-peinar.jpg",
-      "categoria": "cabello",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 8,
-      "nombre": "Protector térmico capilar 60 cc",
-      "descripcion": "Protector térmico: Silicona vegetal, keratina hidrolizada, vitamina E, aceite de jojoba",
-      "precio": 9000,
-      "imagen": "protector-termico.jpg",
-      "categoria": "cabello",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 9,
-      "nombre": "Óleo capilar para puntas abiertas 10 cc",
-      "descripcion": "Óleo nutritivo: Aceite de argán, aceite de ricino, vitamina E, aceite de jojoba",
-      "precio": 5000,
-      "imagen": "oleo-capilar.jpg",
-      "categoria": "cabello",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 10,
-      "nombre": "Mascarilla capilar 200 cc",
-      "descripcion": "Mascarilla nutritiva: Manteca de karité, aceite de coco, keratina vegetal, pantenol",
-      "precio": 17000,
-      "imagen": "mascarilla-capilar.jpg",
-      "categoria": "cabello",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
     },
     {
       "id": 11,
-      "nombre": "Crema en barra para afeitar 65 gramos",
-      "descripcion": "Crema de afeitar: Manteca de karité, aceite de coco, arcilla kaolín, aloe vera",
-      "precio": 7000,
-      "imagen": "crema-afeitar-barra.jpg",
-      "categoria": "cuerpo",
-      "tipo_producto": "simple",
+      "nombre": "Mascarilla capilar",
+      "precio": 1000,
+      "imagen": "mascarilla-capilar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "familia",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": true,
+      "variantes": [
+        { "id": 1101, "especificidad": "Reparación extrema", "ingredientes": "Queratina vegetal, aminoácidos", "activo": true },
+        { "id": 1102, "especificidad": "Nutrición óleo", "ingredientes": "Aceite de palta, vitamina B5", "activo": true }
+      ]
     },
     {
       "id": 12,
-      "nombre": "Gel capilar 100 gramos",
-      "descripcion": "Gel fijador: Lino orgánico, glicerina vegetal, aloe vera, aceite esencial de romero",
-      "precio": 5000,
-      "imagen": "gel-capilar.jpg",
+      "nombre": "Serum capilar",
+      "precio": 1000,
+      "imagen": "serum-capilar.jpg",
       "categoria": "cabello",
+      "ingredientes": "Mezcla de aceites secos y siliconas vegetales",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": false
     },
     {
       "id": 13,
-      "nombre": "Cremas faciales 50 cc",
-      "descripcion": "Crema facial: Manteca de karité, aceite de jojoba, aloe vera, vitamina E, aceites esenciales",
-      "imagen": "cremas-faciales.jpg",
-      "categoria": "rostro",
-      "tipo_producto": "familia",
+      "nombre": "Protector térmico",
+      "precio": 1000,
+      "imagen": "protector-termico.jpg",
+      "categoria": "cabello",
+      "ingredientes": "Proteína de arroz y extracto de bambú",
+      "tipo_producto": "simple",
       "activo": true,
       "descuento": 0,
-      "variantes": [
-        { "id": 1301, "nombre": "Crema facial para piel mixta", "precio": 8000 },
-        { "id": 1302, "nombre": "Crema facial para piel seca", "precio": 8000 },
-        { "id": 1303, "nombre": "Crema facial para piel grasa", "precio": 8000 },
-        { "id": 1304, "nombre": "Crema facial Teens", "precio": 8000 },
-        { "id": 1305, "nombre": "Crema facial unificadora de tono", "precio": 8000 },
-        { "id": 1306, "nombre": "Gel Vitamina C facial", "precio": 8000 }
-      ]
+      "promo_eligible": false
     },
     {
       "id": 14,
-      "nombre": "Crema facial 50 cc (Premium)",
-      "descripcion": "Crema facial con activos específicos: Ácido hialurónico, colágeno, elastina, provitamina B5, niacinamida, ginkgo biloba, ácido salicílico, té verde",
-      "imagen": "cremas-faciales-premium.jpg",
-      "categoria": "rostro",
-      "tipo_producto": "familia",
+      "nombre": "Perfume capilar",
+      "precio": 1000,
+      "imagen": "perfume-capilar.jpg",
+      "categoria": "cabello",
+      "ingredientes": "Alcohol de cereales, fragancias naturales",
+      "tipo_producto": "simple",
       "activo": true,
       "descuento": 0,
-      "variantes": [
-        { "id": 1401, "nombre": "Ácido hialurónico, colágeno y elastina", "precio": 17000 },
-        { "id": 1402, "nombre": "Provitamina B5", "precio": 17000 },
-        { "id": 1403, "nombre": "Niacinamida y ginkgo biloba", "precio": 17000 },
-        { "id": 1404, "nombre": "Ácido salicílico y té verde", "precio": 17000 }
-      ]
+      "promo_eligible": false
     },
     {
       "id": 15,
-      "nombre": "After shave",
-      "descripcion": "After shave: Aloe vera, hamamelis, mentol, aceite esencial de lavanda",
+      "nombre": "Tónico capilar",
       "precio": 1000,
-      "imagen": "after-shave.jpg",
-      "categoria": "cuerpo",
-      "tipo_producto": "simple",
+      "imagen": "tonico-capilar.jpg",
+      "categoria": "cabello",
+      "tipo_producto": "familia",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": true,
+      "variantes": [
+        { "id": 1501, "especificidad": "Stop Caída", "ingredientes": "Jarilla, Ortiga, Cafeína", "activo": true },
+        { "id": 1502, "especificidad": "Crecimiento", "ingredientes": "Biotina, Romero", "activo": true }
+      ]
     },
     {
       "id": 16,
-      "nombre": "Crema corporal y manos",
-      "descripcion": "Crema hidratante: Manteca de karité, aceite de almendras, aloe vera, vitamina E",
+      "nombre": "Crema facial hidratante",
       "precio": 1000,
-      "imagen": "crema-corporal-manos.jpg",
-      "categoria": "cuerpo",
+      "imagen": "crema-facial.jpg",
+      "categoria": "rostro",
+      "ingredientes": "Ácido hialurónico, agua de rosas",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": true
     },
     {
       "id": 17,
-      "nombre": "Crema corporal",
-      "descripcion": "Crema hidratante: Manteca de cacao, aceite de coco, aloe vera, vitamina E",
-      "precio": 1000,
-      "imagen": "crema-corporal.jpg",
-      "categoria": "cuerpo",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 18,
-      "nombre": "Sales terapéuticas",
-      "descripcion": "Sales de baño: Sales de Epsom, lavanda, romero, aceite esencial de eucalipto",
-      "precio": 1000,
-      "imagen": "sales-terapeuticas.jpg",
-      "categoria": "cuerpo",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 19,
-      "nombre": "Tónico facial",
-      "descripcion": "Tónico facial: Agua de rosas, hamamelis, aloe vera, ácido hialurónico",
-      "precio": 1000,
-      "imagen": "tonico-facial.jpg",
-      "categoria": "rostro",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 20,
-      "nombre": "Repelente",
-      "descripcion": "Repelente natural: Citronela, eucalipto, lavanda, geraniol",
-      "precio": 1000,
-      "imagen": "repelente.jpg",
-      "categoria": "otros",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 21,
-      "nombre": "Gel de limpieza",
-      "descripcion": "Gel limpiador: Aloe vera, hamamelis, aceite de árbol de té, glicerina vegetal",
-      "precio": 1000,
-      "imagen": "gel-limpieza.jpg",
-      "categoria": "rostro",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 22,
-      "nombre": "Crema de limpieza facial",
-      "descripcion": "Crema limpiadora: Manteca de karité, aceite de jojoba, aloe vera, arcilla blanca",
-      "precio": 1000,
-      "imagen": "crema-limpieza-facial.jpg",
-      "categoria": "rostro",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 23,
-      "nombre": "Perfumes",
-      "descripcion": "Perfumes artesanales: Notas cítricas, florales y amaderadas con aceites esenciales puros",
-      "precio": 1000,
-      "imagen": "perfumes.jpg",
-      "categoria": "otros",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 24,
-      "nombre": "Lip gloss",
-      "descripcion": "Lip gloss: Aceite de ricino, vitamina E, manteca de cacao, pigmentos naturales",
-      "precio": 1000,
-      "imagen": "lip-gloss.jpg",
-      "categoria": "maquillaje",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 25,
-      "nombre": "Serúm facial",
-      "descripcion": "Serum facial: Ácido hialurónico, vitamina C, aceite de rosa mosqueta, coenzima Q10",
+      "nombre": "Serum facial",
       "precio": 1000,
       "imagen": "serum-facial.jpg",
       "categoria": "rostro",
+      "ingredientes": "Vitamina C concentrada",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": true
     },
     {
-      "id": 26,
-      "nombre": "Sombra",
-      "descripcion": "Sombra de ojos: Pigmentos minerales, manteca de karité, vitamina E",
-      "precio": 1000,
-      "imagen": "sombra.jpg",
-      "categoria": "maquillaje",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 27,
-      "nombre": "Bálsamo labial",
-      "descripcion": "Bálsamo labial: Manteca de cacao, aceite de coco, vitamina E, aceite esencial de menta",
-      "precio": 1000,
-      "imagen": "balsamo-labial.jpg",
-      "categoria": "rostro",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 28,
-      "nombre": "Labial",
-      "descripcion": "Labial: Manteca de cacao, aceite de ricino, pigmentos minerales, vitamina E",
-      "precio": 1000,
-      "imagen": "labial.jpg",
-      "categoria": "maquillaje",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 29,
-      "nombre": "Jabones saponificados",
-      "descripcion": "Jabón artesanal: Aceite de oliva, aceite de coco, manteca de karité, arcilla, avena",
-      "precio": 1000,
-      "imagen": "jabones-saponificados.jpg",
-      "categoria": "cuerpo",
-      "tipo_producto": "simple",
-      "activo": true,
-      "descuento": 0
-    },
-    {
-      "id": 30,
+      "id": 18,
       "nombre": "Agua micelar",
-      "descripcion": "Agua micelar: Agua de rosas, hamamelis, aloe vera, glicerina vegetal",
       "precio": 1000,
       "imagen": "agua-micelar.jpg",
       "categoria": "rostro",
+      "ingredientes": "Micelas de coco, extracto de pepino",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 19,
+      "nombre": "Exfoliante facial",
+      "precio": 1000,
+      "imagen": "exfoliante-facial.jpg",
+      "categoria": "rostro",
+      "ingredientes": "Semillas de albaricoque finas",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 20,
+      "nombre": "Mascarilla facial arcilla",
+      "precio": 1000,
+      "imagen": "mascarilla-facial.jpg",
+      "categoria": "rostro",
+      "ingredientes": "Arcilla blanca (Kaolin), miel",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 21,
+      "nombre": "Bálsamo labial",
+      "precio": 1000,
+      "imagen": "balsamo-labial.jpg",
+      "categoria": "rostro",
+      "ingredientes": "Cera de abejas, manteca de cacao",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 22,
+      "nombre": "Desodorante natural",
+      "precio": 1000,
+      "imagen": "desodorante-natural.jpg",
+      "categoria": "cuerpo",
+      "ingredientes": "Bicarbonato de sodio grado alimenticio, aceite de coco",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 23,
+      "nombre": "Pasta dental natural",
+      "precio": 1000,
+      "imagen": "pasta-dental.jpg",
+      "categoria": "otros",
+      "ingredientes": "Arcilla blanca, menta pura",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 24,
+      "nombre": "Enjuague bucal natural",
+      "precio": 1000,
+      "imagen": "enjuague-bucal.jpg",
+      "categoria": "otros",
+      "ingredientes": "Xilitol, aceite de árbol de té",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 25,
+      "nombre": "Aceite esencial relajante",
+      "precio": 1000,
+      "imagen": "aceite-relajante.jpg",
+      "categoria": "otros",
+      "ingredientes": "Lavanda, Melisa",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 26,
+      "nombre": "Aceite esencial energético",
+      "precio": 1000,
+      "imagen": "aceite-energetico.jpg",
+      "categoria": "otros",
+      "ingredientes": "Naranja, Limón, Bergamota",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": true
+    },
+    {
+      "id": 27,
+      "nombre": "Vela aromática soja",
+      "precio": 1000,
+      "imagen": "vela-soja.jpg",
+      "categoria": "otros",
+      "ingredientes": "Cera de soja, pabilo de algodón",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 28,
+      "nombre": "Difusor de ambientes",
+      "precio": 1000,
+      "imagen": "difusor.jpg",
+      "categoria": "otros",
+      "ingredientes": "Alcohol vegetal, esencias premium",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 29,
+      "nombre": "Bruma de almohada",
+      "precio": 1000,
+      "imagen": "bruma-almohada.jpg",
+      "categoria": "otros",
+      "ingredientes": "Lavanda y Manzanilla",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
+    },
+    {
+      "id": 30,
+      "nombre": "Repelente natural",
+      "precio": 1000,
+      "imagen": "repelente.jpg",
+      "categoria": "otros",
+      "ingredientes": "Citronela, Eucalipto",
+      "tipo_producto": "simple",
+      "activo": true,
+      "descuento": 0,
+      "promo_eligible": false
     },
     {
       "id": 31,
-      "nombre": "Gel contorno de ojos",
-      "descripcion": "Gel contorno de ojos: Ácido hialurónico, cafeína, aloe vera, vitamina C",
+      "nombre": "Bálsamo para tatuajes",
       "precio": 1000,
-      "imagen": "gel-contorno-ojos.jpg",
-      "categoria": "rostro",
+      "imagen": "balsamo-tatuajes.jpg",
+      "categoria": "otros",
+      "ingredientes": "Manteca de karité, Pantenol",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": false
     },
     {
       "id": 32,
-      "nombre": "Óleo gel para dolores articulares",
-      "descripcion": "Óleo gel: Arnika, mentol, alcanfor, romero, eucalipto",
+      "nombre": "Óleo gel dolores",
       "precio": 1000,
       "imagen": "oleo-gel-dolores.jpg",
       "categoria": "otros",
+      "ingredientes": "Árnica, Enebro, Eucalipto",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": false
     },
     {
       "id": 33,
       "nombre": "Crema pañalera",
-      "descripcion": "Crema pañalera: Óxido de zinc, manteca de karité, aloe vera, caléndula",
       "precio": 1000,
       "imagen": "crema-panalera.jpg",
       "categoria": "otros",
+      "ingredientes": "Óxido de zinc, caléndula, aloe vera",
       "tipo_producto": "simple",
       "activo": true,
-      "descuento": 0
+      "descuento": 0,
+      "promo_eligible": false
     }
   ],
-  "promociones": [
+  "promociones_automaticas": [
     {
-      "id": 1001,
-      "nombre": "Promo 1",
-      "descripcion": "Kit Shampoo + Acondicionador + Mascarilla - 25% OFF",
-      "tipo": "descuento_por_kit",
-      "productos_requeridos": [101, 301, 10],
-      "regla_descuento": {
-        "tipo": "porcentaje",
-        "valor": 25
-      },
+      "id": "promo_kit_capilar",
+      "nombre": "Kit Capilar Completo",
+      "descripcion": "25% OFF llevando Shampoo + Acondicionador + Mascarilla",
+      "productos_requeridos": [
+        { "base_id": 1, "tipo": "any_variant" },
+        { "base_id": 10, "tipo": "any_variant" },
+        { "base_id": 11, "tipo": "any_variant" }
+      ],
+      "descuento_porcentaje": 25,
       "activa": true
     },
     {
-      "id": 1002,
-      "nombre": "Promo 2",
-      "descripcion": "Tónico + Shampoo Stop Caída - 20% OFF",
-      "tipo": "descuento_por_kit",
-      "productos_requeridos": [201, 105],
-      "regla_descuento": {
-        "tipo": "porcentaje",
-        "valor": 20
-      },
-      "activa": false
-    },
-    {
-      "id": 1003,
-      "nombre": "Promo 3",
-      "descripcion": "Shampoo para rulos + Acondicionador para rulos + Gel capilar - 30% OFF",
-      "tipo": "descuento_por_kit",
-      "productos_requeridos": [106, 303, 12],
-      "regla_descuento": {
-        "tipo": "porcentaje",
-        "valor": 30
-      },
-      "activa": false
+      "id": "promo_duo_rostro",
+      "nombre": "Dúo Rostro Radiante",
+      "descripcion": "15% OFF llevando Crema Facial + Serum Facial",
+      "productos_requeridos": [
+        { "base_id": 16, "tipo": "simple" },
+        { "base_id": 17, "tipo": "simple" }
+      ],
+      "descuento_porcentaje": 15,
+      "activa": true
     }
   ]
 }
