@@ -7,12 +7,12 @@
     <meta name="description" content="Productos cosméticos naturales en Entre Ríos. Envíos a Colonia Avellaneda, Paraná y zonas aledañas.">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+    <!-- ========== HEADER ========== -->
     <header class="header">
         <div class="container header-container">
             <a href="#" class="logo">SIMPLE</a>
@@ -29,7 +29,7 @@
             <div class="header-icons">
                 <div class="cart-icon-container" id="cart-btn">
                     <i class="fas fa-shopping-bag"></i>
-                    <span class="cart-count" id="cart-count" style="display: none;">0</span>
+                    <span class="cart-count" id="cart-count">0</span>
                 </div>
                 <div class="menu-btn" id="menu-btn">
                     <i class="fas fa-bars"></i>
@@ -37,6 +37,7 @@
             </div>
         </div>
 
+        <!-- Dropdown del Carrito -->
         <div class="cart-dropdown" id="cart-dropdown">
             <div class="cart-header">
                 <h3>Tu Carrito</h3>
@@ -46,6 +47,8 @@
                 <p class="empty-cart-msg">Tu carrito está vacío</p>
             </div>
             <div class="cart-footer">
+                <!-- Aquí aparece el resumen de descuentos por promo si aplica -->
+                <div id="cart-promo-summary" class="cart-promo-summary" style="display:none;"></div>
                 <div class="cart-total">
                     <span>Total:</span>
                     <span id="cart-total-price">$0</span>
@@ -55,6 +58,7 @@
         </div>
     </header>
 
+    <!-- ========== HERO ========== -->
     <section id="inicio" class="hero">
         <div class="hero-content">
             <h1>Cosmética Natural</h1>
@@ -63,10 +67,12 @@
         </div>
     </section>
 
+    <!-- ========== PRODUCTOS ========== -->
     <section id="productos" class="products-section">
         <div class="container">
             <h2 class="section-title">Nuestros Productos</h2>
             
+            <!-- Guía de compra -->
             <div class="shopping-guide">
                 <div class="guide-steps">
                     <div class="step">
@@ -85,11 +91,17 @@
                 <p class="guide-note">✨ ¡Es rápido, seguro y sin registros!</p>
             </div>
 
-            <div class="offers-section" style="margin-bottom: 40px;">
-                <div class="offers-container" id="offers-display">
-                    </div>
+            <!-- ========== SECCIÓN DE OFERTAS ==========
+                 Visible solo cuando hay al menos 1 promo activa.
+                 Se construye dinámicamente desde JS con los datos de products.json → "promociones".
+                 Máximo 3 tarjetas de oferta.
+            -->
+            <div class="offers-section" id="offers-section" style="display:none;">
+                <h3 class="offers-title">🏷️ Ofertas Especiales</h3>
+                <div class="offers-container" id="offers-container"></div>
             </div>
 
+            <!-- Filtros por categoría -->
             <div class="categories-filter">
                 <button class="filter-btn active" data-category="todos">Todos</button>
                 <button class="filter-btn" data-category="cabello">Cabello</button>
@@ -99,10 +111,12 @@
                 <button class="filter-btn" data-category="otros">Otros</button>
             </div>
 
-            <div class="products-grid" id="products-grid"></div>
+            <!-- Contenedor de productos (se llena con JS) -->
+            <div class="products-container" id="products-container"></div>
         </div>
     </section>
 
+    <!-- ========== NOSOTROS ========== -->
     <section id="nosotros" class="about-section">
         <div class="about-container">
             <div class="about-content">
@@ -132,10 +146,11 @@
         </div>
     </section>
 
+    <!-- ========== MODAL CHECKOUT ========== -->
     <div id="checkout-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2 style="color: var(--rosa-principal);">Finalizar Pedido</h2>
+            <h2>Finalizar Pedido</h2>
             <p>Completa tus datos para enviar el pedido por WhatsApp.</p>
             
             <form id="checkout-form">
@@ -146,6 +161,10 @@
                 <div class="form-group">
                     <label for="customer-address">Dirección de entrega *</label>
                     <input type="text" id="customer-address" required placeholder="Ej: Calle 123, Colonia Avellaneda">
+                </div>
+                <div class="form-group">
+                    <label for="customer-comments">Comentarios (Opcional)</label>
+                    <textarea id="customer-comments" placeholder="Ej: El timbre no funciona, dejar en portería..."></textarea>
                 </div>
                 
                 <div class="form-actions">
@@ -158,8 +177,10 @@
         </div>
     </div>
 
+    <!-- ========== NOTIFICACIÓN TOAST ========== -->
     <div id="notification" class="notification">Producto agregado</div>
 
+    <!-- ========== FOOTER ========== -->
     <footer id="contacto">
         <div class="footer-container">
             <div class="footer-logo">
@@ -170,7 +191,7 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h4>Contacto</h4>
-                    <ul class="contact-list" style="list-style: none; padding: 0;">
+                    <ul class="contact-list">
                         <li>
                             <a href="https://wa.me/5493434747844" target="_blank">
                                 <i class="fab fa-whatsapp"></i> 343 474-7844
@@ -186,7 +207,7 @@
                 
                 <div class="footer-column">
                     <h4>Zonas de Entrega</h4>
-                    <ul class="hours-list" style="list-style: none; padding: 0;">
+                    <ul class="hours-list">
                         <li>Colonia Avellaneda</li>
                         <li>Paraná</li>
                         <li>San Benito</li>
@@ -197,7 +218,7 @@
                 
                 <div class="footer-column">
                     <h4>Horarios de atención</h4>
-                    <ul class="quick-links" style="list-style: none; padding: 0;">
+                    <ul class="quick-links">
                         <li>Lun a Vie: 9-18hs</li>
                         <li>Sábados: 10-14hs</li>
                     </ul>
@@ -216,6 +237,7 @@
         </div>
     </footer>
 
+    <!-- ========== MODAL LOGIN ADMIN ========== -->
     <div id="admin-login-modal" class="modal">
         <div class="modal-content" style="max-width: 400px;">
             <span class="close-modal" id="close-admin-login">&times;</span>
@@ -230,19 +252,38 @@
         </div>
     </div>
 
+    <!-- ========== PANEL DE ADMINISTRACIÓN ==========
+         Estructura de pestañas:
+         · Tab "Productos" → crear/editar/eliminar familias y sus variantes
+         · Tab "Ofertas"   → crear/editar/activar/desactivar/eliminar promociones
+         El panel se posiciona sobre el contenido (fixed, top:70px) y cubre la vista.
+    -->
     <div id="admin-panel" class="admin-panel" style="display: none;">
         <div class="admin-header">
-            <h3>⚙️ Panel de Control</h3>
-            <div>
-                <button id="add-product-btn" class="btn-primary">+ Nuevo Producto</button>
-                <button id="logout-admin-btn" class="btn-secondary">Salir</button>
-            </div>
+            <h3>⚙️ Panel de Administración</h3>
+            <button id="logout-admin-btn" class="btn-secondary">Salir</button>
         </div>
-        <div class="admin-products-list" id="admin-products-list">
-            <p style="text-align: center; color: var(--texto-claro); padding: 20px;">
-                El panel avanzado de familias y variantes se encuentra en desarrollo. 
-                Por ahora, por favor gestiona el inventario directamente desde GitHub editando el archivo <code>products.json</code>.
-            </p>
+
+        <!-- Pestañas -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="productos">📦 Productos</button>
+            <button class="admin-tab" data-tab="ofertas">🏷️ Ofertas</button>
+        </div>
+
+        <!-- Contenido: Productos -->
+        <div class="admin-tab-content active" id="tab-productos">
+            <div class="admin-tab-actions">
+                <button id="add-product-btn" class="btn-primary">+ Nueva Familia de Productos</button>
+            </div>
+            <div id="admin-products-list" class="admin-products-list"></div>
+        </div>
+
+        <!-- Contenido: Ofertas -->
+        <div class="admin-tab-content" id="tab-ofertas">
+            <div class="admin-tab-actions">
+                <button id="add-promo-btn" class="btn-primary">+ Nueva Oferta</button>
+            </div>
+            <div id="admin-promos-list" class="admin-promos-list"></div>
         </div>
     </div>
 
