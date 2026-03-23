@@ -5,7 +5,7 @@
       "id": 1,
       "nombre": "Shampoo sólido",
       "descripcion_base": "Shampoo sólido artesanal elaborado con ingredientes naturales seleccionados.",
-      "imagen": "shampoo-solido-principal.jpg",
+      "imagen": "shampoo-solido.jpg",
       "categoria": "cabello",
       "tipo_producto": "familia",
       "activo": true,
